@@ -8,7 +8,7 @@
 +++++++++++++++++++++++++++++++++++++++++++
 
 
-Add R-W during combo with low health check
+Add R-W during combo
 
 ]]--
 if GetObjectName(myHero) ~= "Karma" then return end
@@ -17,35 +17,36 @@ local VERSION = "0.02"
 local SCRIPT_NAME = "Karma - The Enlightened Meme"
 local SCRIPT_PATCH = "7.7"
 local SCRIPT_AUTHOR = "Navimus"
-local SERVERADRESS = "raw.githubusercontent.com"
-local SCRIPTADRESS = "Lunafont/LuaScripts/master"
-local SCRIPTNAME = "Karma%20-%20The%20Enlightened%20Meme"
-local FULLADRESS = "http://"..SERVERADRESS..SCRIPTADRESS.."/"..SCRIPTNAME..".lua"
+local FULLADRESS = "https://raw.githubusercontent.com/Lunafont/LuaScripts/master/Karma%20-%20The%20Enlightened%20Meme.lua"
 local Target
 local Dev
 
-function CheckUpdate()
-  local ServerVersionDATA = GetWebResultAsync(SERVERADRESS , SCRIPTADRESS.."/"..SCRIPTNAME..".version")
-  if ServerVersionDATA then
-    local ServerVersion = tonumber(ServerVersionDATA)
-    if ServerVersion then
-      if ServerVersion > tonumber(VERSION) then
-        PrintChat("<font color=\"#9614ff\">UPDATING: Dont press F9!</font>")
-        DownloadFileAsync(FULLADRESS, SCRIPT_PATH..SCRIPTNAME..".lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF9)</font>") end)
-      else
-        PrintChat("<font color=\"#9614ff\">------------------------------------------------------------</font>")
-        PrintChat("")
-        PrintChat("<font color=\"#9614ff\">"..SCRIPT_NAME.."</font> "..VERSION.." <font color=\"#ffffff\"> by </font><font color=\"#007FFF\">"..SCRIPT_AUTHOR.."</font>")
-        PrintChat("")
-        PrintChat("<font color=\"#9614ff\">------------------------------------------------------------</font>")
-      end
+function AutoUpdate(data)
+    if tonumber(data) > tonumber(ver) then
+        PrintChat("New version found! " .. data)
+        PrintChat("Downloading update, please wait...")
+        DownloadFileAsync("https://raw.githubusercontent.com/Auschwitzer/GoS/master/ElRayz.lua", SCRIPT_PATH .. "ElRayz.lua", function() PrintChat("Update Complete, please 2x F6!") return end)
     else
-      PrintChat("<font color=\"#9614ff\">ERROR: Couldnt Update!</font>")
+        PrintChat("No updates found!")
     end
+end
+
+function CheckUpdate(data)
+  if tonumber(data) > tonumber(VERSION) then
+    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("<font color=\"#9614ff\">UPDATING: Dont press F9!</font>")
+    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    DownloadFileAsync(FULLADRESS, SCRIPT_PATH..SCRIPTNAME..".lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF6)</font>") end)
   else
-    PrintChat("<font color=\"#9614ff\">ERROR: Couldnt connect to Server - Please retry later!</font>")
+    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("")
+    PrintChat("<font color=\"#9614ff\">"..SCRIPT_NAME.."</font> "..VERSION.." <font color=\"#ffffff\"> by </font><font color=\"#007FFF\">"..SCRIPT_AUTHOR.."</font>")
+    PrintChat("")
+    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
   end
 end
+
+GetWebResultAsync("https://raw.githubusercontent.com/Lunafont/LuaScripts/master/Karma%20-%20The%20Enlightened%20Meme.version" , CheckUpdate)
 
 function Skills()
   Passiv = {name="Gathering Fire"}
@@ -151,16 +152,10 @@ function Clear()
 end
 
 function DevStuff()
-  local X = io.open(SCRIPT_PATH.."Speeds.txt", "a+")
-  local Y = {"Q", "W", "E", "R"}
-  for v = 0, 3, 1 do
-    X:write(string.format(Y[v].." Speed"..myHero:GetSpellData(v).speed), "\n")
-    X:write(string.format(Y[v].." Width"..myHero:GetSpellData(v).width), "\n")
-  end
+    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
 end
 
 OnLoad( function()
-  CheckUpdate()
   Skills()
   DrawMenu()
   HeroSkinChanger(myHero, 1)
