@@ -21,22 +21,12 @@ local FULLADRESS = "https://raw.githubusercontent.com/Lunafont/LuaScripts/master
 local Target
 local Dev
 
-function AutoUpdate(data)
-    if tonumber(data) > tonumber(ver) then
-        PrintChat("New version found! " .. data)
-        PrintChat("Downloading update, please wait...")
-        DownloadFileAsync("https://raw.githubusercontent.com/Auschwitzer/GoS/master/ElRayz.lua", SCRIPT_PATH .. "ElRayz.lua", function() PrintChat("Update Complete, please 2x F6!") return end)
-    else
-        PrintChat("No updates found!")
-    end
-end
-
 function CheckUpdate(data)
   if tonumber(data) > tonumber(VERSION) then
     PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
     PrintChat("<font color=\"#9614ff\">UPDATING: Dont press F9!</font>")
     PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
-    DownloadFileAsync(FULLADRESS, SCRIPT_PATH..SCRIPTNAME..".lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF6)</font>") end)
+    DownloadFileAsync(FULLADRESS, SCRIPT_PATH.."Karma - The Enlightened Meme.lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF6)</font>") end)
   else
     PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
     PrintChat("")
