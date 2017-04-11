@@ -13,7 +13,7 @@ Add R-W during combo
 ]]--
 if GetObjectName(myHero) ~= "Karma" then return end
 
-local VERSION = "0.02"
+local VERSION = "0.03"
 local SCRIPT_NAME = "Karma - The Enlightened Meme"
 local SCRIPT_PATCH = "7.7"
 local SCRIPT_AUTHOR = "Navimus"
@@ -82,7 +82,7 @@ function DrawMenu()
     Menu.Settings:Boolean("FleeW", "Use W while fleeing?", false)
     Menu.Settings:Boolean("FleeE", "Use E while fleeing?", true)
     Menu.Settings:Boolean("FleeR", "Use R while fleeing?", false)
-    Menu.Settings:Boolean("AutoPotions", "Use Health Potions automatically?", true)
+    Menu.Settings:Boolean("AutoPotions", "Use Health Potions automatically?", false)
     Menu.Settings:Boolean("DevNotes", "Show Developers Notes", false)
 end
 
