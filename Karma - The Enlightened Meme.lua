@@ -2,36 +2,36 @@
 
 +++++++++++++++++++++++++++++++++++++++++++
 +																					+
-+				 Karma the Enlightened Meme		  	+
++				 Karma The Enlightened Meme		  	+
 +							Made by Navimus							+
 +																					+
 +++++++++++++++++++++++++++++++++++++++++++
 
 
-Add R-W during combo
+Add R-W during combo with low health check
 
 ]]--
 if GetObjectName(myHero) ~= "Karma" then return end
 
-local VERSION = "0.01"
+local VERSION = "0.02"
 local SCRIPT_NAME = "Karma - The Enlightened Meme"
 local SCRIPT_PATCH = "7.7"
 local SCRIPT_AUTHOR = "Navimus"
 local SERVERADRESS = "raw.githubusercontent.com"
-local SCRIPTADRESS = "/Navimus/Bol-Scripts/master/Scripts"
+local SCRIPTADRESS = "Lunafont/LuaScripts/master"
 local SCRIPTNAME = "Karma%20-%20The%20Enlightened%20Meme"
 local FULLADRESS = "http://"..SERVERADRESS..SCRIPTADRESS.."/"..SCRIPTNAME..".lua"
 local Target
 local Dev
 
 function CheckUpdate()
-  local ServerVersionDATA = GetWebResult(SERVERADRESS , SCRIPTADRESS.."/"..SCRIPTNAME..".version")
+  local ServerVersionDATA = GetWebResultAsync(SERVERADRESS , SCRIPTADRESS.."/"..SCRIPTNAME..".version")
   if ServerVersionDATA then
     local ServerVersion = tonumber(ServerVersionDATA)
     if ServerVersion then
       if ServerVersion > tonumber(VERSION) then
         PrintChat("<font color=\"#9614ff\">UPDATING: Dont press F9!</font>")
-        DownloadFile(FULLADRESS, SCRIPT_PATH..SCRIPTNAME..".lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF9)</font>") end)
+        DownloadFileAsync(FULLADRESS, SCRIPT_PATH..SCRIPTNAME..".lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF9)</font>") end)
       else
         PrintChat("<font color=\"#9614ff\">------------------------------------------------------------</font>")
         PrintChat("")
@@ -43,13 +43,13 @@ function CheckUpdate()
       PrintChat("<font color=\"#9614ff\">ERROR: Couldnt Update!</font>")
     end
   else
-    PrintChat("<font color=\"#9614ff\">ERROR: Couldnt connect to Server - Check Internet connection!</font>")
+    PrintChat("<font color=\"#9614ff\">ERROR: Couldnt connect to Server - Please retry later!</font>")
   end
 end
 
 function Skills()
   Passiv = {name="Gathering Fire"}
-  SpellQ = {name="Inner Flame", range=GetCastRange(myHero,_Q), delay=0.25, width=120, speed=2500}
+  SpellQ = {name="Inner Flame", range=GetCastRange(myHero,_Q), delay=0.25, width=120, speed=2400}
   SpellW = {name="Focused Resolve", range=GetCastRange(myHero,_W), delay=0.25}
   SpellE = {name="Inspire", range=GetCastRange(myHero,_E), delay=0.25}
   SpellR = {name="Mantra", delay=0.25}
@@ -63,7 +63,6 @@ function DrawMenu()
     Menu.Combo:Slider("QPredictionValue", "Q Hit Chance Adjustments:", 3,0,10,1)
     Menu.Combo:Boolean("ComboW", "Use W in Combo?", true)
     Menu.Combo:Boolean("ComboE", "Use E in Combo?", true)
-    Menu.Combo:Slider("ERange", "E when x Distance:", 6,0,10,1)
     Menu.Combo:Boolean("ComboR", "Use R in Combo?", true)
   Menu:Menu("Harass", "Karma Harass Settings")
     Menu.Harass:KeyBinding("HarassButton", "Harass Button:", string.byte("A"))
@@ -71,7 +70,6 @@ function DrawMenu()
     Menu.Harass:Boolean("HarassQ", "Use Q in Harass?", true)
     Menu.Harass:Boolean("HarassW", "Use W in Harass?", true)
     Menu.Harass:Boolean("HarassE", "Use E in Harass?", false)
-    Menu.Combo:Slider("ERange", "E when x Distance:", 6,0,10,1)
     Menu.Harass:Boolean("HarassCombo", "Use W-Q Combo in Harass?", true)
     --[[      SCRIPT CURRENTLY DOESNT SUPPORT CLEAR OPTIONS!
   Menu:Menu("Clear", "Karma Clear Settings")
@@ -81,7 +79,7 @@ function DrawMenu()
     Menu.Clear:Boolean("LaneClearE", "Use E in Lane Clear?", false)
     Menu.Clear:Boolean("JungleClearQ", "Use Q in Jungle Clear?", false)
     Menu.Clear:Boolean("JungleClearW", "Use W in Jungle Clear?", false)
-    Menu.Clear:Boolean("JungleClearE", "Use E in Jungle Clear?", false)]]
+    Menu.Clear:Boolean("JungleClearE", "Use E in Jungle Clear?", false) ]]
   Menu:Menu("Drawing", "Karma Draw Settings")
     Menu.Drawing:Boolean("DrawQ", "Draw Q Range?", true)
     Menu.Drawing:Boolean("DrawW", "Draw W Range?", true)
@@ -119,28 +117,30 @@ function Combo()
     if CanUseSpell(myHero,_Q)==0 and Menu.Combo.ComboQ:Value()==true and QPrediction.hitChance > (Menu.Combo.QPredictionValue:Value() * 0.1) and not QPrediction:mCollision(1) then
       if CanUseSpell(myHero,_R)==0 and Menu.Combo.ComboR:Value()==true then
         CastSpell(_R)
+        CastSkillShot(_Q, QPrediction.castPos)
+      else
+        CastSkillShot(_Q, QPrediction.castPos)
       end
-      CastSkillShot(_Q, QPrediction.castPos)
     end
     if CanUseSpell(myHero,_W)==0 and Menu.Combo.ComboW:Value()==true and ValidTarget(Target, SpellW.range) then
       CastTargetSpell(Target, _W)
     end
-    if CanUseSpell(myHero,_E)==0 and Menu.Combo.ComboE:Value()==true and ValidTarget(Target, (Menu.Combo.ERange:Value()*10)) then
+    if CanUseSpell(myHero,_E)==0 and Menu.Combo.ComboE:Value()==true and ValidTarget(Target, 600) then
       CastSpell(_E)
     end
   end
 end
 
 function Harass()
-  if Menu.Combo.ComboButton:Value()==true and ValidTarget(Target, 900) then
-    local QPrediction = GetPrediction(Target, SpellQ)
-    if CanUseSpell(myHero,_Q)==0 and Menu.Harass.HarassQ.Value()==true and QPrediction.hitChance > (Menu.Harass.QPredictionValue:Value() * 0.1) and not QPrediction:mCollision(1) then
+  if Menu.Harass.HarassButton:Value()==true and ValidTarget(Target, 1000) then
+    local QPrediction = GetPrediction(Target, SpellQ, myHero)
+    if CanUseSpell(myHero,_Q)==0 and Menu.Harass.HarassQ:Value()==true and QPrediction.hitChance > (Menu.Harass.QPredictionValue:Value() * 0.1) and not QPrediction:mCollision(1) then
       CastSkillShot(_Q, QPrediction.castPos)
     end
     if CanUseSpell(myHero,_W)==0 and Menu.Harass.HarassW:Value()==true and ValidTarget(Target, SpellW.range) then
       CastTargetSpell(Target, _W)
     end
-    if CanUseSpell(myHero,_E)==0 and Menu.Combo.HarassE:Value()==true and ValidTarget(Target, (Menu.Harass.ERange:Value()*10)) then
+    if CanUseSpell(myHero,_E)==0 and Menu.Harass.HarassE:Value()==true and ValidTarget(Target, 600) then
       CastSpell(_E)
     end
   end
@@ -151,12 +151,16 @@ function Clear()
 end
 
 function DevStuff()
-  for i=1,Game.MissileCount (),1 do
-    PrintChat(Missile(X).name)
+  local X = io.open(SCRIPT_PATH.."Speeds.txt", "a+")
+  local Y = {"Q", "W", "E", "R"}
+  for v = 0, 3, 1 do
+    X:write(string.format(Y[v].." Speed"..myHero:GetSpellData(v).speed), "\n")
+    X:write(string.format(Y[v].." Width"..myHero:GetSpellData(v).width), "\n")
   end
 end
 
 OnLoad( function()
+  CheckUpdate()
   Skills()
   DrawMenu()
   HeroSkinChanger(myHero, 1)
@@ -191,8 +195,9 @@ OnDraw( function(myHero)
     if Menu.Harass.HarassButton:Value()==true then
       DrawText("Harass Active!",30,WorldToScreen(1,GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z).x-85,WorldToScreen(1,GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z).y-165,ARGB(255,150,20,255));
     end
+    --[[      SCRIPT CURRENTLY DOESNT SUPPORT CLEAR OPTIONS!
     if Menu.Clear.ClearButton:Value()==true then
       DrawText("Clear Active!",30,WorldToScreen(1,GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z).x-85,WorldToScreen(1,GetOrigin(myHero).x,GetOrigin(myHero).y,GetOrigin(myHero).z).y-165,ARGB(255,150,20,255));
-    end
+    end ]]
   end
 end)
