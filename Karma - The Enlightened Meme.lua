@@ -23,16 +23,16 @@ local Dev
 
 function CheckUpdate(data)
   if tonumber(data) > tonumber(VERSION) then
-    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("<font color=\"#9614ff\">----------------------------------------------------------------</font>")
     PrintChat("<font color=\"#9614ff\">UPDATING: Dont press F9!</font>")
-    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("<font color=\"#9614ff\">----------------------------------------------------------------</font>")
     DownloadFileAsync(FULLADRESS, SCRIPT_PATH.."Karma - The Enlightened Meme.lua", function () PrintChat("<font color=\"#9614ff\">UPDATED: "..SCRIPT_NAME.." up to date - Please reload (2xF6)</font>") end)
   else
-    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("<font color=\"#9614ff\">----------------------------------------------------------------</font>")
     PrintChat("")
-    PrintChat("<font color=\"#9614ff\">"..SCRIPT_NAME.."</font> "..VERSION.." <font color=\"#ffffff\"> by </font><font color=\"#007FFF\">"..SCRIPT_AUTHOR.."</font>")
+    PrintChat("<font color=\"#9614ff\"> "..SCRIPT_NAME.."</font> "..VERSION.." <font color=\"#ffffff\"> by </font><font color=\"#007FFF\">"..SCRIPT_AUTHOR.."</font>")
     PrintChat("")
-    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("<font color=\"#9614ff\">----------------------------------------------------------------</font>")
   end
 end
 
@@ -142,7 +142,7 @@ function Clear()
 end
 
 function DevStuff()
-    PrintChat("<font color=\"#9614ff\">-----------------------------------------------------------------</font>")
+    PrintChat("<font color=\"#9614ff\">----------------------------------------------------------------</font>")
 end
 
 OnLoad( function()
