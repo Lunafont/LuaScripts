@@ -13,9 +13,9 @@ Add R-W during combo
 ]]--
 if GetObjectName(myHero) ~= "Karma" then return end
 
-local VERSION = "0.03"
+local VERSION = "0.04"
 local SCRIPT_NAME = "Karma - The Enlightened Meme"
-local SCRIPT_PATCH = "7.7"
+local SCRIPT_PATCH = "7.8"
 local SCRIPT_AUTHOR = "Navimus"
 local FULLADRESS = "https://raw.githubusercontent.com/Lunafont/LuaScripts/master/Karma%20-%20The%20Enlightened%20Meme.lua"
 local Target
@@ -91,13 +91,13 @@ function healthPotions()
     HealthPercent=GetCurrentHP(myHero)*100/GetMaxHP(myHero)
     HealthPercent=math.floor(HealthPercent)
     if HealthPercent<50 then
-      if GetItemID(myHero, 6)==2003 then CastSpell(6) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
-      if GetItemID(myHero, 7)==2003 then CastSpell(7) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
-      if GetItemID(myHero, 8)==2003 then CastSpell(8) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
-      if GetItemID(myHero, 9)==2003 then CastSpell(9) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
-      if GetItemID(myHero, 10)==2003 then CastSpell(10) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
-      if GetItemID(myHero, 11)==2003 then CastSpell(11) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
-      if GetItemID(myHero, 12)==2003 then CastSpell(12) PrintChat("<font color=\"#9614ff\">Using Health Potion!") end
+      for i = ITEM_1, ITEM_7 do
+        if GetItemID(myHero, i) == 2003 and CanUseSpell(myHero, i) == 0 then
+          CastSpell(i)
+          PrintChat("<font color=\"#9614ff\">Using Health Potion!")
+          return
+        end
+      end
     end
   end
 end
